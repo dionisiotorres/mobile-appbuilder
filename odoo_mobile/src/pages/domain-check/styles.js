@@ -67,6 +67,8 @@ const styles = StyleSheet.create({
   },
   input: {
     marginVertical: 4,
+    padding: 0,
+    margin: 0
   },
 });
 

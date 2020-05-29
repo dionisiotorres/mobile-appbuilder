@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Keyboard, AsyncStorage, Modal, KeyboardAvoidingView } from 'react-native';
+import { View, Image, Keyboard, AsyncStorage, Modal, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 // import { Form, Item, Input, Text } from 'native-base';
 import {
   Input,
@@ -26,14 +26,18 @@ export default class DomainCheck extends Component {
     this.isLoading = this.isLoading.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
   }
 
   componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    if (this.keyboardDidShowListener) {
+      this.keyboardDidShowListener.remove();
+    }
+    if (this.keyboardDidHideListener) {
+      this.keyboardDidHideListener.remove();
+    }
   }
 
   componentDidMount() {
@@ -156,6 +160,9 @@ export default class DomainCheck extends Component {
             onSubmitEditing={() => this.checkDomainName()}
             onChangeText={(domainName) => this.setState({ domainName })}
           />
+          {this.state.loading && <View>
+            <ActivityIndicator size={"small"} color="#5cb85c" />
+          </View>}
         </View>
         {/* <Modal style={{flex: 1}} visible={this.state.showLogin}>
           <Text>Login here</Text>

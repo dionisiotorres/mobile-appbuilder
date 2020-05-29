@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { View, Image, Keyboard, Modal, KeyboardAvoidingView, Text, TouchableOpacity } from 'react-native';
-// import { Form, Button, Text } from 'native-base';
-import {
-  Button,
-  Layout,
-} from 'react-native-ui-kitten';
+import { View, Image, Keyboard, Button, KeyboardAvoidingView, Text, Platform } from 'react-native';
+// import {
+//   Button,
+//   Layout,
+// } from 'react-native-ui-kitten';
 import styles from './styles';
 import I18n from "../../i18n/i18n";
+
 export default class Authentication extends Component {
 
   constructor(props) {
@@ -22,7 +22,7 @@ export default class Authentication extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
 
@@ -47,8 +47,13 @@ export default class Authentication extends Component {
   }
 
   componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    if (this.keyboardDidHideListener) {
+      this.keyboardDidHideListener.remove();
+    }
+    if (this.keyboardDidShowListener) {
+      this.keyboardDidShowListener.remove();
+    }
+
   }
 
   componentDidMount() {
@@ -73,24 +78,27 @@ export default class Authentication extends Component {
   render() {
     return (
       <KeyboardAvoidingView style={styles.wrapper} behavior="padding">
-        <Layout style={styles.wrapperContainer}>
+        <View style={styles.wrapperContainer}>
           <Image source={require('../../../images/logo.png')}
             style={styles.imageLogo}
             resizeMode='contain' />
 
-          <Button status="success" onPress={() => this.login()} style={styles.formBtn}>
-            {I18n.t('lbl_login')}
-          </Button>
+          {/* <Touchable status="success" onPress={() => this.login()} style={styles.formBtn}>
+            <Text>{I18n.t('lbl_login')}</Text>
+          </Touchable> */}
 
-          {/* <Form style={styles.formWrapper}>
-            <Button block success onPress={() => this.login()} style={styles.formBtn}>
-              <Text>{I18n.t('lbl_login')}</Text>
-            </Button>
-            {this.state.isEnabledSignUp && <Button block success onPress={() => this.signUp()} style={styles.formBtn}>
+          <View style={styles.formWrapper}>
+            <View style={{ padding: 5, height: 30, width: 120 }}>
+              <Button title={I18n.t('lbl_login')}
+                color="#5cb85c"
+                onPress={() => this.login()} style={styles.formBtn}>
+              </Button>
+            </View>
+            {this.state.isEnabledSignUp && <Touchable onPress={() => this.signUp()} style={styles.formBtn}>
               <Text>{I18n.t('lbl_signup')}</Text>
-            </Button>}
-          </Form> */}
-        </Layout>
+            </Touchable>}
+          </View>
+        </View>
       </KeyboardAvoidingView>
     )
   }

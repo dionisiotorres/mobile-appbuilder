@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   formBtn: {
-
+    backgroundColor: "#5cb85c",
+    color: "#FFF"
   },
   imageLogo: {
     width: Dimensions.get('window').width / 2,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Platform, AsyncStorage, ActivityIndicator, View } from 'react-native';
+import { Platform, AsyncStorage, ActivityIndicator, View, BackHandler, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import styles from './styles';
 
@@ -8,7 +8,7 @@ export default class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      url: 'about:blank',
+      url: `https://${this.props.navigation.state.params.domainName}/web`,
       username: this.props.navigation.state.params.username,
       password: this.props.navigation.state.params.password,
       company_domain: '',
@@ -19,6 +19,22 @@ export default class Home extends Component {
       isLoggedOut: false,
     }
   }
+
+  backAction = () => {
+    // Alert.alert("Hold on!", "Are you sure you want to go back?", [
+    //   {
+    //     text: "Cancel",
+    //     onPress: () => null,
+    //     style: "cancel"
+    //   },
+    //   { text: "YES", onPress: () => BackHandler.exitApp() }
+    // ]);
+    // return true;
+    if (this.webref) {
+      this.webref.goBack();
+    }
+    return true;
+  };
 
   componentWillMount() {
     this.setState({
@@ -43,8 +59,14 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
+
+    this.backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.backAction
+    );
+
     this.setState({
-      url: 'http://' + this.props.navigation.state.params.domainName + '/web#home',
+      url: 'https://' + this.props.navigation.state.params.domainName + '/web#home',
     });
 
     AsyncStorage.getItem('username').then(value => {
@@ -96,7 +118,7 @@ export default class Home extends Component {
   }
 
   onNavigationStateChange = (navState) => {
-    // console.log(navState.url);
+    console.log(navState.url);
     let domain = '';
     if (this.props.navigation.state.params.domainName.indexOf('odook8') > -1) {
       domain = 'http://' + this.props.navigation.state.params.domainName + '/web';

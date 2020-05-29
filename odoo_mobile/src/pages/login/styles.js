@@ -39,10 +39,12 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   inputText: {
-    height: 50,
+    height: 45,
     paddingLeft: 0,
-    color: '#000000'
+    color: '#000000',
+    width: "80%"
   },
+  inputWrapper: { marginTop: 5, marginBottom: 5},
   errorLabel: {
     color: '#FF0000',
     fontSize: 14,
@@ -54,6 +56,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 15,
     marginLeft: 0,
+    color: "white",
+    backgroundColor: "#5cb85c"
   },
   loadingWrapper: {
     flex: 1,
@@ -73,7 +77,8 @@ const styles = StyleSheet.create({
 
   wrapperContainer: {
     // backgroundColor: '#FF0000',
-    height: Dimensions.get('window').height / 2,
+    height: Dimensions.get('window').height / 1.5,
+    alignItems: "center"
   },
 });
 

@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { View, Image, Keyboard, AsyncStorage, KeyboardAvoidingView, Alert, Text } from 'react-native';
+import { View, Image, Keyboard, AsyncStorage, KeyboardAvoidingView, Button, Text, TouchableOpacity, TouchableNativeFeedback, ActivityIndicator } from 'react-native';
 import {
-  Input,
-  Button,
-  Layout,
+  Input
 } from "react-native-ui-kitten";
 // import { Container, Content, Form, Item, Input, Label, Button, Text } from 'native-base';
 import styles from './styles';
 // import Spinner from 'react-native-loading-spinner-overlay';
 import I18n from '../../i18n/i18n';
+
+const Touchable = Platform.OS === "android" ? TouchableNativeFeedback : TouchableOpacity;
+
 export default class Login extends Component {
 
   constructor(props) {
@@ -80,11 +81,15 @@ export default class Login extends Component {
   }
 
   login = () => {
-    this.isLoading(true)
+    this.setState({
+      isDbNotCorrect: false,
+      error: false,
+    });
+    this.isLoading(true);
     Keyboard.dismiss()
     // let db = this.state.username.substring(this.state.username.lastIndexOf("@") + 1)
     if (this.state.userNameError || this.state.passwordError) {
-      this.isLoading(false)
+      this.isLoading(false);
     } else {
       let db = '';
       if (this.state.isDbNotCorrect) {
@@ -173,37 +178,49 @@ export default class Login extends Component {
     return (
       <KeyboardAvoidingView style={styles.wrapper} behavior="padding">
 
-        <Layout style={styles.wrapperContainer}>
-
+        <View style={styles.wrapperContainer}>
           <Image source={require('../../../images/w360s-logo.jpg')}
             style={styles.imageLogo}
             resizeMode='contain'
           />
-          <Input autoCapitalize={'none'} style={styles.inputText}
-            autoCorrect={false} size='small' placeholder={"Username"}
-            onChangeText={(username) => this.setState({ username })}
-            value={this.state.username} />
-          <Input secureTextEntry={true} style={styles.inputText}
-            size='small' placeholder={"Password"}
-            onChangeText={(password) => this.setState({ password })}
-            value={this.state.password} />
+          <View style={styles.inputWrapper}>
+            <Input autoCapitalize={'none'} style={styles.inputText}
+              autoCorrect={false} size='small' placeholder={"Username"}
+              onChangeText={(username) => this.setState({ username })}
+              value={this.state.username} />
+          </View>
+          <View style={styles.inputWrapper}>
+            <Input secureTextEntry={true} style={styles.inputText}
+              size='small' placeholder={"Password"}
+              onSubmitEditing={() => this.login()}
+              onChangeText={(password) => this.setState({ password })}
+              value={this.state.password} />
+          </View>
           {this.state.isDbNotCorrect && <View stackedLabel error={this.state.databaseError} style={styles.inputTextWrapper}>
             {/* <Label>{I18n.t('lbl_database_name')}</Label> */}
             <Input autoCapitalize={'none'} autoCorrect={false} style={styles.inputText}
               size='small' placeholder={"Database Name"}
+              onSubmitEditing={() => this.login()}
               onChangeText={(databaseName) => this.setState({ databaseName })}
               value={this.state.databaseName} />
           </View>}
 
-          {this.state.error && !this.state.isDbNotCorrect && <Text style={styles.errorLabel}>{I18n.t('lbl_err_msg_0001')}</Text>}
-          {this.state.error && this.state.isDbNotCorrect && <Text style={styles.errorLabel}>
-            {I18n.t('lbl_err_msg_0005')}
-          </Text>}
+          <View style={{ margin: 10 }}>
+            {this.state.error && !this.state.isDbNotCorrect && <Text style={styles.errorLabel}>{I18n.t('lbl_err_msg_0001')}</Text>}
+            {this.state.error && this.state.isDbNotCorrect && <Text style={styles.errorLabel}>
+              {I18n.t('lbl_err_msg_0005')}
+            </Text>}
+          </View>
 
-          <Button status="success" style={styles.buttonContainer} onPress={() => this.login()}>
-            {I18n.t('lbl_login')}
-          </Button>
-        </Layout>
+          {!this.state.loading && <TouchableOpacity style={{ marginTop: 5, height: 45, width: 200, alignItems: "center", backgroundColor: "#5cb85c", justifyContent: "center", alignItems: "center" }}
+            onPress={this.login}>
+              <Text style={{color: "#FFFFFF", fontSize: 16}}>{I18n.t('lbl_login')}</Text>
+          </TouchableOpacity>}
+          {this.state.loading && <TouchableOpacity style={{ marginTop: 5, height: 45, width: 200, alignItems: "center", backgroundColor: "#5cb85c", justifyContent: "center", alignItems: "center" }}
+            onPress={() => {}}>
+              <ActivityIndicator size={"small"} color="#FFFFFF" />
+          </TouchableOpacity>}
+        </View>
       </KeyboardAvoidingView>
     );
   }
